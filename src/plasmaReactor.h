@@ -218,7 +218,7 @@ public:
                 *eVibN2_dot = evibN2_sum - RVT_N2;
                 *Ep_dot = ext_sum;
 
-                // Currently we only consider e_vib of N2.
+                // Currently we only consider e_vib of N2. // 2a&2b 
                 if (constPressure) {
                     // *dTdt = - hdot_vol / (rho * cp);
                     *HE_dot = -hdot_vol + eth_sum + RVT_N2 + evibO2_sum;
