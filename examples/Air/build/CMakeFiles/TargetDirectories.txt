@@ -1,0 +1,3 @@
+/home/linux/Chemtest/ChemPlasKin/examples/Air/build/CMakeFiles/ChemPlasKin.dir
+/home/linux/Chemtest/ChemPlasKin/examples/Air/build/CMakeFiles/edit_cache.dir
+/home/linux/Chemtest/ChemPlasKin/examples/Air/build/CMakeFiles/rebuild_cache.dir

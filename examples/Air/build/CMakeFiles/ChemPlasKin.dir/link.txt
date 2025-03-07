@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -rdynamic CMakeFiles/ChemPlasKin.dir/testAir.cpp.o -o ChemPlasKin   -L/home/linux/Chemtest/ChemPlasKin/examples/Air/../../../cantera/build/lib  -Wl,-rpath,/home/linux/Chemtest/ChemPlasKin/examples/Air/../../../cantera/build/lib -lcantera_shared -lstdc++fs 
