@@ -88,7 +88,7 @@ int main()
 
     // Species configured by CppBOLOS
     std::map<std::string, double> BoltzmannSpecies = {
-            {"N2", 1.0}
+            {"N2", 1.0} // mole fraction of N2 -the explaination is from YouTube
     };
 
     // Read cross-section data
@@ -160,9 +160,9 @@ int main()
     auto kin = sol->kinetics();
 
     int irxns = kin->nReactions();
-    vector<double> qf(irxns);
-    vector<double> qr(irxns);
-    vector<double> q(irxns);
+    vector<double> qf(irxns); // forward reaction rate
+    vector<double> qr(irxns); // reverse reaction rate
+    vector<double> q(irxns); // net reaction rate
 
     std::vector<std::string> species_names = gas->speciesNames(); // {"e", "N2(A)", "N2^+"};
     std::vector<int> index_list;

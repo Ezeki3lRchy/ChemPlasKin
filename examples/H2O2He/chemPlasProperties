@@ -23,7 +23,7 @@ plasmaHeatModel  Flitti;   // 'default' or 'Flitti' (Flitti A, Pancheshnyi S 200
 heatLoss         no;       // Include heatLoss model or not
 C0               1.975e7;  // = 1.0/r_dis^2, r_dis: discharge radius; 1.0 is C0 in Eq.(13)
 
-// Initial mixture composition (in mole fraction）
+// Initial mixture composition -in mole fraction
 Mixture 
 {
      H2     0.1667;
@@ -50,7 +50,7 @@ E/N(NRP)         100; // Reduced electric field for the NRP discharges [Td]
 E/N(DC)          20;  // E/N for DC discharges [Td]
 stayDC           no;  // Whether to maintain DC discharge after NRP
 
-f_NRP            30e3; // NRP frequency [Hz]
+f_NRP            30e3; // nanosecond repetitively pulsed (NRP) frequency [Hz] // NRP 
 
 pulseEnergy      0.1;  // Input energy per pulse [mJ*cm^-3]
 

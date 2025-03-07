@@ -43,7 +43,7 @@ odes
 // ================ Output Log ================
 
 outputFile       "<case>/output_H2O2HE.csv";
-//writeSpecies   all; // Write ALL species
-writeSpecies     E, H2, O2, H, O, OH, O2(A1); // Write selected species
+writeSpecies   all; // Write ALL species
+//writeSpecies     E, H2, O2, H, O, OH, O2(A1); // Write selected species
 
 // ************************************************************************* //
