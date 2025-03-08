@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     // Read time control
     double runTime = readParameter<double>(controlDictPath, "startTime");
     double t_end = readParameter<double>(controlDictPath, "endTime");
-    const int nPulses = readParameter<int>(controlDictPath, "nPulses");
+    const int nPulses = readParameter<int>(controlDictPath, "nPulses"); // cannnot found in tset Air
 
     double dt1 = readParameter<double>(controlDictPath, "dt1");
     double dt_max = readParameter<double>(controlDictPath, "dt_max");
@@ -86,11 +86,11 @@ int main(int argc, char *argv[]) {
     // Set T_gas, E/N, and other NRP parameters
     double Tgas = readParameter<double>(parameterPath, "Temperature");
     double P0 = readParameter<double>(parameterPath, "Pressure");
-    double EN = readParameter<double>(parameterPath, "E/N(NRP)");
+    double EN = readParameter<double>(parameterPath, "E/N(NRP)"); // used for EN_Temp & BoltzmannRate::bsolver.set_EN(EN);
     double EN_DC = readParameter<double>(parameterPath, "E/N(DC)");
     bool stayEN_DC = readParameter<bool>(parameterPath, "stayDC");
     const double N_e_ini = readParameter<double>(parameterPath, "electronDens");
-    double Ep = readParameter<double>(parameterPath, "pulseEnergy");
+    double Ep = readParameter<double>(parameterPath, "pulseEnergy"); // Seems it just used for checking if terminate nanosecond discharge, cut off by designated power deposition Ep
     const double f_NRP = readParameter<double>(parameterPath, "f_NRP");
     const double pulseWidth = readParameter<double>(parameterPath, "pulseWidth");
     const double pulseExten = readParameter<double>(controlDictPath, "pulseExten");
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]) {
         oss << "\nrunTime [s]: " << std::scientific << std::setprecision(9) << runTime;
         std::cout << oss.str() << " | iPulse: " << iPulse << "\n";
 
-        double EN_temp = EN_DC;  // default E/N value
+        double EN_temp = EN_DC;  // default E/N value // why? -WL
 
         if (iPulse < nPulses) { // TODO: there could be a more concise way to do dynamic time step
             dt3 = 0.;  // Initialize timestep at discharge quiescent zone

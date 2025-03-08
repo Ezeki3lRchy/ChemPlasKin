@@ -99,6 +99,7 @@ int main()
     CppBOLOS::currentLogLevel = CppBOLOS::LOG_INFO;
 
     // Set up time control and pulse number
+    // This is about control Dict -WL
     double runTime = 0.0;
     double dt = 0.1E-9;
     double endTime = 100E-9;
@@ -106,6 +107,7 @@ int main()
     bool printReactionRates = false;
 
     /* ------------------ READ EXPERIMENTAL DATA ------------------ */
+    // Interpolated experimental voltage profile (Vp) and Electron Density (Ne)  -WL
     std::vector<std::pair<double, double>> Vp_t_data;
     std::vector<std::pair<double, double>> Ne_t_data;
     // Read data from CSV
@@ -126,7 +128,7 @@ int main()
     /* ------------------------------- SET UP BOLTZMANN SOLVER ------------------------------- */
     std::cout << "\n========  SETTING BOLTZMANN SOLVER ... ========\n" << std::endl;    // Species configured by CppBOLOS
 
-    // Species configured by CppBOLOS
+    // Species configured by CppBOLOS -EBE solver； but species is only used in the Boltzmann solver? -WL
     std::map<std::string, double> BoltzmannSpecies = {
             // Be careful of possible difference of species names in LXCat and *yaml input,
             // especially for e/E, He/HE, Ar/AR. Always try to use unified names.
@@ -147,7 +149,8 @@ int main()
     std::stringstream ss = CppBOLOS::clean_file(CS_data_file);
     std::vector<CppBOLOS::Collision> collisions = CppBOLOS::parse(ss); // parse collision data
 
-    // Set up grid. This can affect accuracy.
+    // Set up grid. This can affect accuracy. 
+    // Discretization of electron energy -WL
     BoltzmannRate::bsolver.set_grid("QuadraticGrid", 0, 60, 150);
     BoltzmannRate::bsolver.load_collisions(collisions);
     LOG_INFO("\nA total of " + std::to_string(BoltzmannRate::bsolver.number_of_targets()) +
@@ -163,8 +166,12 @@ int main()
     BoltzmannRate::bsolver.init();
 
     // Solve EBE, serve as cache and preliminary convergence check
+    /*
+    This part of the code is used to solve the Electron Boltzmann Equation (EBE) to determine the electron energy distribution function (EEDF) 
+    and then extract key plasma parameters like the mean electron energy and electron temperature. -WL
+    */
     BoltzmannRate::F0 = BoltzmannRate::bsolver.maxwell(4.0); // initial guess from Maxwell EEDF
-
+    // F0 is the initial guess of the EEDF, which is a Maxwellian distribution with a given electron temperature. -WL
     try{
         BoltzmannRate::F0 = BoltzmannRate::bsolver.converge(BoltzmannRate::F0, 200, 1e-5);
     } catch (const std::runtime_error& e) {
@@ -173,6 +180,7 @@ int main()
     }
 
     double mean_energy = BoltzmannRate::bsolver.mean_energy(BoltzmannRate::F0);
+    // meean_energy is not the only parameter that can be extracted from the EEDF. -WL
     std::cout << "mean energy: " << mean_energy << "eV (" << BoltzmannRate::bsolver.get_Te() << "K)" << std::endl;
 
     /* ----------------------------- SET UP GAS PHASE AND REACTOR  -------------------------------- */
@@ -187,7 +195,7 @@ int main()
     double gas_density = 1e-6*P0/Tgas/CppBOLOS::KB; // [#/cm^3]
 
     // Create a mixture composition map
-    Composition compMap = BoltzmannSpecies;
+    Composition compMap = BoltzmannSpecies; // so the species is not only use in the Boltzmann solver, but also in the gas phase -WL
     compMap["Electron"] = nE/gas_density;
     // compMap["N2+"] = nE;
 
@@ -199,7 +207,7 @@ int main()
     int nsp = gas->nSpecies();
     std::cout<< "initial density: " << getNumberDens(gas, gas->speciesIndex("Electron")) << ", "<< gas->moleFraction("N2+") << " nSpecies: " << nsp << std::endl;
 
-    // Create a gas-plasma reactor object
+    // Create a gas-plasma reactor object // but actually, just odes -WL
     ChemPlasReactor odes = ChemPlasReactor(sol, BoltzmannSpecies);
     odes.inertSpIndex = odes.findSpeciesIndex("N2");
     odes.nonThermal = !thermalEffect;
@@ -249,6 +257,7 @@ int main()
 
     /* ------------------------------------- RUN THE SIMULATION ---------------------------------- */
     std::cout << "\n======== RUNNING SIMULATION ========\n" << std::endl;
+    // The couling strategy is different from the general master.cpp -WL
 
     clock_t t0 = clock(); // save start time
 
@@ -280,7 +289,7 @@ int main()
         }
 
         std::cout << "Updating EEDF ..." << "\n";
-        BoltzmannRate::bsolver.init();
+        BoltzmannRate::bsolver.init(); // ??? -WL
         BoltzmannRate::updateBoltzmannSolver(200, 1e-5, 1E20/(EN*EN));
         // **NOTE**: 1E20/(EN*EN) is a good estimation of delta0 to speed up bsolver convergence,
         // especially for significantly varying E/N values.
