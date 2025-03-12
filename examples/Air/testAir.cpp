@@ -33,7 +33,7 @@ double getNumberDens(const shared_ptr<ThermoPhase>& gas, const size_t i ){
     return 1e-6 * gas->moleFraction(i) * Avogadro * gas->molarDensity();
 }
 
-// Function to read CSV data
+// Function to read CSV data, y_t is a reference to a vector of pairs of double values
 void readCSV(std::string fileName, std::vector<std::pair<double, double>> &y_t) {
     std::ifstream file(fileName);
     // Check if the file is open
