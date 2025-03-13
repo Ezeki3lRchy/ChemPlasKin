@@ -199,10 +199,11 @@ int main()
     compMap["Electron"] = nE/gas_density;
     // compMap["N2+"] = nE;
 
+    // Set the state
     gas->setMoleFractionsByName(compMap);
     gas->setState_TP(Tgas, P0);
 
-    // Set the state
+
     // Initial electron number density does not matter; too small value may cause problem.
     int nsp = gas->nSpecies();
     std::cout<< "initial density: " << getNumberDens(gas, gas->speciesIndex("Electron")) << ", "<< gas->moleFraction("N2+") << " nSpecies: " << nsp << std::endl;
@@ -303,8 +304,8 @@ int main()
         integrator->reinitialize(runTime, odes);
 
         /*----------------------  Advance time step --------------------*/
-        runTime += dt;
-        integrator->integrate(runTime);
+        runTime += dt; // Move time forward
+        integrator->integrate(runTime); // Solve ODEs for the next time step
         odes.updateState(integrator->solution());
         std::cout << "Internal integration steps count: " << odes.nSteps << std::endl;
         odes.nSteps = 0;

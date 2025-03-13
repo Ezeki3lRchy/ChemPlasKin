@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
     double disEnergy = 0.0;                 // initial discharge energy deposited
     const double pulsePeriod = 1.0/f_NRP;
     int iStepInPulse = 0, iStepAfPulse = 0; // step index in/after a pulse discharge
-    double T_old = Tgas;
+    double T_old = Tgas;                    // for calculating dT/dt -WL
     double dTdt = 0.0, dTdt_max = 1.0;      // initial dT/dt and its maximum
     double time_max_dTdt = 0.0;             // ignition delay time (at maximum dT/dt)
     const double SMALL = 1.0e-16;
@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
 
     /* ------------------------------ CREATE & INIT ODE INTEGRATOR --------------------------------- */
     //  - the default settings for CVodesIntegrator are used:
-    //     solution method: BDF_Method
+    //     solution method: BDF_Method (Backward Differentiation Formula)
     //     problem type: DENSE + NOJAC
     //     relative tolerance: 1.0e-9
     //     absolute tolerance: 1.0e-15
@@ -281,7 +281,9 @@ int main(int argc, char *argv[]) {
 
     // Main time loop
     const double dTbelowTeq = readParameter<double>(controlDictPath, "dTbelowTeq");
-    while (runTime < t_end && gas->temperature() < (T_eq - dTbelowTeq)) {
+    // Gas temperature must remain below the equilibrium temperature. -Wl
+    // The simulation focuses on the transient behavior before thermal equilibrium is reached. -WL
+    while (runTime < t_end && gas->temperature() < (T_eq - dTbelowTeq)) {  
         std::ostringstream oss; // Format output digit
         oss << "\nrunTime [s]: " << std::scientific << std::setprecision(9) << runTime;
         std::cout << oss.str() << " | iPulse: " << iPulse << "\n";
@@ -310,7 +312,7 @@ int main(int argc, char *argv[]) {
                         std::cout << "NSD terminated at " << disEnergy << " [mJ/cm^3]" << ", tau_NRP = " << tau_NRP << "\n";
                         nE_2 = getNumberDens(gas, odes.electronIndex); // Store n_e at the end of a nanosecond pulse
 
-                        // TODO: may need to update Boltzmann grid if E/N changes significantly
+                        // TODO: may need to update Boltzmann grid if E/N changes significantly // MAY???? lack of criteria -WL
 
                         fastExpansion = true;
                     }
