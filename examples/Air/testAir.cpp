@@ -100,9 +100,9 @@ int main()
 
     // Set up time control and pulse number
     // This is about control Dict -WL
-    double runTime = 0.0;
+    double runTime = 0.0; // s
     double dt = 0.1E-9;
-    double endTime = 100E-9;
+    double endTime = 100E-9; // 100 nanoseconds
     bool thermalEffect = true;
     bool printReactionRates = false;
 
@@ -111,7 +111,7 @@ int main()
     std::vector<std::pair<double, double>> Vp_t_data;
     std::vector<std::pair<double, double>> Ne_t_data;
     // Read data from CSV
-    readCSV("../Vp-t.csv", Vp_t_data);
+    readCSV("../sin-Vp-t.csv", Vp_t_data);  // change waveform 100ns -WL
     readCSV("../ne-t.csv", Ne_t_data);
 
     // Example usage of interpolate function
@@ -268,14 +268,14 @@ int main()
 
         // Relax dt after 25ns
         if (runTime > 25e-9) {
-            dt = 5e-10;
+            dt = 0.5e-9; // for readability
         }
 
         std::cout << "\nrunTime [s]: "  << runTime << ", dt = " << dt << std::endl;
 
         // -------------------- Update E/N and nE from experimental data ----------------------
         try {
-            EN = std::max(interpolate(Vp_t_data, runTime*1e9) * 1000 / (4e-3 * Avogadro*gas->molarDensity()) * 1e21, 0.1);
+            EN = std::max(interpolate(Vp_t_data, runTime*1e9) * 1000 / (4e-3 * Avogadro*gas->molarDensity()) * 1e21, 0.1); // the datafile is ns -WL
             nE = interpolate(Ne_t_data, runTime*1e9);
             std::cout << "Interpolated E/N = " <<
                       EN << ", n_E = " <<  nE << std::endl;
