@@ -94,6 +94,25 @@ double interpolate(const std::vector<std::pair<double, double>> &y_t, double que
     return boundaryValue;
 }
 
+double piecewise_linear_interpolation(const std::vector<std::pair<double, double>> &y_t, double queryPoint) {
+    if (y_t.size() < 2) {
+        throw std::runtime_error("Need at least 2 data points for linear interpolation.");
+    }
+
+    for (size_t i = 0; i < y_t.size() - 1; ++i) {
+        double x0 = y_t[i].first, y0 = y_t[i].second;
+        double x1 = y_t[i + 1].first, y1 = y_t[i + 1].second;
+
+        if (queryPoint >= x0 && queryPoint <= x1) {
+            // Linear interpolation formula: y = y0 + (y1 - y0) * (queryPoint - x0) / (x1 - x0)
+            return y0 + (y1 - y0) * (queryPoint - x0) / (x1 - x0);
+        }
+    }
+
+    throw std::runtime_error("Query point out of range.");
+}
+
+
 int main()
 {
     CppBOLOS::currentLogLevel = CppBOLOS::LOG_INFO;
